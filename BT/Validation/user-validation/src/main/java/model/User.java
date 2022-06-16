@@ -12,16 +12,31 @@ import java.util.Objects;
 @Entity
 @Table(name = "user")
 public class User implements Validator {
-    private int id;
-    private String firstName;
-    private String lastName;
-    private int age;
-    private String phoneNumber;
-    private String email;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    private int id;
+
+    @Basic
+    @Column(name = "first_name", nullable = false, length = 255)
+    private String firstName;
+
+    @Basic
+    @Column(name = "last_name", nullable = false, length = 255)
+    private String lastName;
+
+    @Basic
+    @Column(name = "age", nullable = false)
+    private int age;
+
+    @Basic
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
+
+    @Basic
+    @Column(name = "email", nullable = false, length = 255)
+    private String email;
+
     public int getId() {
         return id;
     }
@@ -30,8 +45,6 @@ public class User implements Validator {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "first_name", nullable = false, length = 255)
     public String getFirstName() {
         return firstName;
     }
@@ -40,8 +53,6 @@ public class User implements Validator {
         this.firstName = firstName;
     }
 
-    @Basic
-    @Column(name = "last_name", nullable = false, length = 255)
     public String getLastName() {
         return lastName;
     }
@@ -50,8 +61,6 @@ public class User implements Validator {
         this.lastName = lastName;
     }
 
-    @Basic
-    @Column(name = "age", nullable = false)
     public int getAge() {
         return age;
     }
@@ -60,8 +69,6 @@ public class User implements Validator {
         this.age = age;
     }
 
-    @Basic
-    @Column(name = "phone_number", nullable = false)
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -70,8 +77,6 @@ public class User implements Validator {
         this.phoneNumber = phoneNumber;
     }
 
-    @Basic
-    @Column(name = "email", nullable = false, length = 255)
     public String getEmail() {
         return email;
     }
