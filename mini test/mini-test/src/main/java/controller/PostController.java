@@ -40,7 +40,7 @@ public class PostController {
         return modelAndView;
     }
 
-    @GetMapping("/edit-province/{id}")
+    @GetMapping("/edit-post/{id}")
     public ModelAndView showEditForm(@PathVariable Long id) {
         Optional<Post> post = postService.findById(id);
         if (post.isPresent()) {
@@ -54,7 +54,7 @@ public class PostController {
         }
     }
 
-    @PostMapping("/edit-province")
+    @PostMapping("/edit-post")
     public ModelAndView updateProvince(@ModelAttribute("post") Post post) {
         postService.save(post);
         ModelAndView modelAndView = new ModelAndView("/edit");
