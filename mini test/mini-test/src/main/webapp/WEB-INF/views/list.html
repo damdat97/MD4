@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a href="/create-post">Create new post</a>
+<h1>Post</h1>
+<div>
+    <form action="/find" method="post">
+        <input type="text" name = "post" placeholder="Nhập title">
+        <input type="submit" value="Search">
+    </form>
+</div>
+
+<div>
+    <form th:action="@{/post-asc}" th:object="${posts}" method="post">
+        <button>Post List Asc</button>
+    </form>
+</div>
+
+<div>
+    <form th:action="@{/post-top4-new}" th:object="${posts}" method="post">
+        <button>Top 4 Post mới nhất</button>
+    </form>
+</div>
+<table border="1">
+    <tr>
+        <th>Title</th>
+        <th>Content</th>
+        <th>Likes</th>
+        <th>Create At</th>
+        <th>Edit</th>
+    </tr>
+    <th:block th:each="post : ${posts}">
+        <tr>
+            <td th:text="${post.title}"></td>
+            <td th:text="${post.content}"></td>
+            <td th:text="${post.likes}"></td>
+            <td th:text="${post.createAt}"></td>
+            <td><a th:href="@{/edit-post/__${post.id}__ }">Edit</a></td>
+        </tr>
+    </th:block>
+</table>
+</body>
+</html>
