@@ -3,9 +3,15 @@ package service;
 import model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import repository.IPostRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -43,5 +49,18 @@ public class PostService implements IPostService{
 
     public Iterable<Post> showTop4New() {
         return postRepository.findTop4New();
+    }
+
+    public Page<Post> findAllPosts(String textSearch, String sortOrder, String sortProperty, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.fromString(sortOrder), sortProperty));
+        return postRepository.findAllPostsWithPagination(textSearch, pageable);
+    }
+
+    public Iterable<Post> findAllPosts2(String textSearch) {
+        return postRepository.findAllPosts(textSearch);
+    }
+
+    public Iterable<Post> findByTitleAndTimeCreated(String textSearch, String timeStart, String timeEnd) {
+        return postRepository.findByTitleAndCreatedTime(textSearch, timeStart, timeEnd);
     }
 }

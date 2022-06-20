@@ -9,11 +9,18 @@
 <h1>Post</h1>
 <div>
     <form action="/find" method="post">
-        <input type="text" name = "post" placeholder="Nhập title">
+        <input type="text" name = "textSearch" placeholder="Nhập title">
         <input type="submit" value="Search">
     </form>
 </div>
-
+<div>
+    <form action="/find-title-timecreate" method="post">
+        <input type="text" name = "textSearch" placeholder="Nhập title">
+        <input type="text" name = "timeStart" placeholder="Nhập khoảng thời gian bắt đầu">
+        <input type="text" name = "timeEnd" placeholder="Nhập khoảng thời gian kết thúc">
+        <input type="submit" value="Search">
+    </form>
+</div>
 <div>
     <form th:action="@{/post-asc}" th:object="${posts}" method="post">
         <button>Post List Asc</button>
@@ -25,23 +32,22 @@
         <button>Top 4 Post mới nhất</button>
     </form>
 </div>
-<table border="1">
-    <tr>
-        <th>Title</th>
-        <th>Content</th>
-        <th>Likes</th>
-        <th>Create At</th>
-        <th>Edit</th>
-    </tr>
-    <th:block th:each="post : ${posts}">
-        <tr>
-            <td th:text="${post.title}"></td>
-            <td th:text="${post.content}"></td>
-            <td th:text="${post.likes}"></td>
-            <td th:text="${post.createAt}"></td>
-            <td><a th:href="@{/edit-post/__${post.id}__ }">Edit</a></td>
-        </tr>
-    </th:block>
-</table>
+<div th:if="${posts!= null}">
+    <div th:each="pt : ${posts}">
+        <span th:text="${pt.title}"></span>
+        <span th:text="${pt.content}"></span>
+        <span th:text="${pt.createAt}"></span>
+        <span th:text="${pt.likes}"></span>
+    </div>
+</div>
+<div th:if="${posts == null}">
+    <div th:each="pt : ${posts}">
+        <span th:text="${pt.title}"></span>
+        <span th:text="${pt.content}"></span>
+        <span th:text="${pt.createAt}"></span>
+        <span th:text="${pt.likes}"></span>
+        <a th:href="@{/edit/__${pt.id}__}">Sửa</a>
+    </div>
+</div>
 </body>
 </html>

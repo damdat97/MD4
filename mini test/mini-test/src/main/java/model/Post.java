@@ -14,7 +14,7 @@ public class Post {
 
     private String content;
 
-    private LocalDateTime createAt;
+    private String createAt;
 
     private Long likes;
 
@@ -45,11 +45,11 @@ public class Post {
         this.content = content;
     }
 
-    public LocalDateTime getCreateAt() {
+    public String getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(String createAt) {
         this.createAt = createAt;
     }
 

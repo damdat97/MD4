@@ -2,12 +2,14 @@ package controller;
 
 import model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import service.PostService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -24,7 +26,10 @@ public class PostController {
 
     @PostMapping("/create-post")
     public ModelAndView savePost(@ModelAttribute("post") Post post) {
-        post.setCreateAt(LocalDateTime.now());
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String timePost = time.format(fmt);
+        post.setCreateAt(timePost);
         postService.save(post);
         ModelAndView modelAndView = new ModelAndView("/create");
         modelAndView.addObject("post", new Post());
@@ -33,8 +38,9 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ModelAndView listPosts() {
-        Iterable<Post> posts = postService.findAll();
+    public ModelAndView listPosts(@RequestParam(value = "textSearch", defaultValue = "") String textSearch) {
+        Iterable<Post> posts = postService.findAllPosts2(textSearch);
+//        Iterable<Post> posts = postService.findAll();
         ModelAndView modelAndView = new ModelAndView("/list");
         modelAndView.addObject("posts", posts);
         return modelAndView;
@@ -64,8 +70,8 @@ public class PostController {
     }
 
     @PostMapping("/find")
-    public ModelAndView findTitle(@RequestParam String post) {
-        Iterable<Post> posts = postService.findByTitle(post);
+    public ModelAndView findTitle(@RequestParam(value = "textSearch", defaultValue = "") String textSearch) {
+        Iterable<Post> posts = postService.findAllPosts2(textSearch);
         ModelAndView modelAndView = new ModelAndView("/findByTitle");
         modelAndView.addObject("posts", posts);
         return modelAndView;
@@ -83,6 +89,16 @@ public class PostController {
     public ModelAndView newPostTop4() {
         Iterable<Post> posts = postService.showTop4New();
         ModelAndView modelAndView = new ModelAndView("/postTop4New");
+        modelAndView.addObject("posts", posts);
+        return modelAndView;
+    }
+
+    @PostMapping("/find-title-timecreate")
+    public ModelAndView findByTitleAndTimeCreate(@RequestParam(value = "textSearch", defaultValue = "") String textSearch,
+                                                 @RequestParam(value = "timeStart") String timeStart,
+                                                 @RequestParam(value = "timeEnd") String timeEnd) {
+        Iterable<Post> posts = postService.findByTitleAndTimeCreated(textSearch, timeStart, timeEnd);
+        ModelAndView modelAndView = new ModelAndView("/list");
         modelAndView.addObject("posts", posts);
         return modelAndView;
     }
