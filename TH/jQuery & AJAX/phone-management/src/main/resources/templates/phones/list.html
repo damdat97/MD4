@@ -83,6 +83,28 @@
                 event.preventDefault();
             });
         })
+
+        $(document).ready(function () {
+            //sư kiện nào thực hiện Ajax
+            $('.editSmartphone').click(function (event) {
+                //lay du lieu
+                let a = $(this);
+                let smartphoneId = a.attr("href");
+                // goi ajax
+                $.ajax({
+                    type: "PUT",
+                    //tên API
+                    url: `/smartphones/${smartphoneId}`,
+                    //xử lý khi thành công
+                    success: function (data) {
+                        a.parent().parent().remove();
+                    }
+
+                });
+                //chặn sự kiện mặc định của thẻ
+                event.preventDefault();
+            });
+        })
     </script>
 </head>
 <body>
