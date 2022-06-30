@@ -134,7 +134,8 @@
                     <label>Bathroom Quantity: </label>
                     <input type="text" name="bathroom" id="bathroom" class="form-control">
                     <label>Image: </label>
-                    <input type="file" name="fileEdit" id="file" class="form-control">
+                    <div id="oldFile"></div>
+                    <input type="file" name="fileEdit"  class="form-control">
                     <label>Price: </label>
                     <input type="number" name="price" id="price" class="form-control">
                 </form>
@@ -231,7 +232,8 @@
                 document.getElementById('address').value = data.address;
                 document.getElementById('bedroom').value = data.bedroom;
                 document.getElementById('bathroom').value = data.bathroom;
-                document.getElementById('file').value = data.fileEdit;
+                document.getElementById("oldFile").innerHTML = `<img src="image/${data.image}" style="max-width: 150px;
+                                                                           height: 150px">`;
                 document.getElementById('price').value = data.price;
             }, error: function (error) {
                 console.log(error)
@@ -243,23 +245,14 @@
     function update() {
         let id = document.getElementById('id').value;
         let formData = new FormData(editForm);
-        let home = {
-            name: formData.get('name'),
-            address: formData.get('address'),
-            bedroom: formData.get('bedroom'),
-            bathroom: formData.get('bathroom'),
-            image: formData.get('file'),
-            price: formData.get('price')
-        }
-        console.log(home)
         $.ajax({
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            type: "PUT",
-            url: "http://localhost:8080/home/" + id,
-            data: JSON.stringify(home),
+            type:"PUT",
+            enctype: "multipart/form-data",
+            url: "http://localhost:8080/home/" +id,
+            data : formData,
+            processData : false,
+            contentType : false,
+            cache : false,
             success: function () {
                 loadData(0)
                 $('#exampleModal1').modal('hide');

@@ -47,7 +47,7 @@ public class HomeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Home> update(@RequestParam("fileEdit") MultipartFile file, @PathVariable Long id, @RequestBody Home home) {
+    public ResponseEntity<Home> update(@RequestParam("fileEdit") MultipartFile file, @PathVariable Long id, Home home) {
         Optional<Home> homeOptional = homeService.findById(id);
         if(!homeOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
