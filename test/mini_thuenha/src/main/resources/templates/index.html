@@ -12,8 +12,6 @@
             crossorigin="anonymous"></script>
     <!-- jQuery library -->
 
-
-
 </head>
 <body>
 <div class="container">
@@ -51,11 +49,19 @@
                         <form class="d-flex">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
+
+                            <a class="nav-link" data-toggle="modal" data-target="#exampleModal2" onclick="showRegisterForm()">Register</a>
+
+                            <a class="nav-link" data-toggle="modal" data-target="#exampleModal3" onclick="showLoginForm()">Login</a>
+
                         </form>
                     </div>
                 </div>
             </nav>
         </div>
+    </div>
+    <div id="content">
+
     </div>
     <div class="row">
         <div class="col-3">List Home</div>
@@ -148,16 +154,69 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Register</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="register" >
+                    <label>Username: </label>
+                    <input type="text" name="username" id="username" class="form-control">
+                    <label>Password: </label>
+                    <input type="password" name="password" id="password" class="form-control">
+                    <label>Confirm Password: </label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveUser()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel3">Login</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="login" >
+                    <label>Username: </label>
+                    <input type="text" name="usernameLogin" id="usernameLogin" class="form-control">
+                    <label>Password: </label>
+                    <input type="password" name="passwordLogin" id="passwordLogin" class="form-control">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="loginUser()">Login</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    let token =""
+
     let pageable = document.getElementById('pageable');
     let tbody = document.getElementById('list');
     let addForm = document.getElementById('addForm')
     let editForm = document.getElementById('editForm')
-    loadData(0)
+    let register = document.getElementById('register')
+    let login = document.getElementById('login')
+
     function loadData(number) {
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/home?page=" + number,
+            url: "http://localhost:8081/home?page=" + number,
             success: function (list) {
                 console.log(list)
                 let str = "";
@@ -203,7 +262,7 @@
         $.ajax({
             enctype: "multipart/form-data",
             type: "POST",
-            url: "http://localhost:8080/home",
+            url: "http://localhost:8081/home",
             data: formData,
             processData: false,
             contentType: false,
@@ -224,7 +283,7 @@
         $('#exampleModal1').modal('show')
         $.ajax({
             type: "GET",
-            url: "http://localhost:8080/home/" + id,
+            url: "http://localhost:8081/home/" + id,
             success: function (data) {
                 console.log(data)
                 document.getElementById('id').value = data.id;
@@ -248,7 +307,7 @@
         $.ajax({
             type:"PUT",
             enctype: "multipart/form-data",
-            url: "http://localhost:8080/home/" +id,
+            url: "http://localhost:8081/home/" +id,
             data : formData,
             processData : false,
             contentType : false,
@@ -262,6 +321,101 @@
                 console.log(error)
             }
         })
+    }
+
+    function showRegisterForm() {
+        $('#exampleModal2').modal('show');
+    }
+
+    function saveUser() {
+        let username = document.getElementById('username').value;
+        let password = document.getElementById('password').value;
+        let confirmPassword = document.getElementById('confirmPassword').value;
+        let data = {
+            username: username,
+            password: password,
+            confirmPassword: confirmPassword
+        }
+        $.ajax({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            type: "POST",
+            url: "http://localhost:8081/register",
+            data: JSON.stringify(data),
+            success: function () {
+                alert("Register done!")
+                $('#exampleModal2').modal('hide');
+                register.reset();
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
+
+    function showLoginForm() {
+        $('#exampleModal3').modal('show');
+    }
+
+    function loginUser() {
+        let usernameLogin = document.getElementById('usernameLogin').value;
+        let passwordLogin = document.getElementById('passwordLogin').value;
+        let user = {
+            username: usernameLogin,
+            password: passwordLogin
+        }
+        $.ajax ({
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            type: "POST",
+            url: "http://localhost:8081/login",
+            data: JSON.stringify(user),
+            success: function (data) {
+                console.log(data)
+                token = data.accessToken
+                $('#exampleModal3').modal('hide');
+                login.reset()
+                currentUser(token)
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
+
+    function currentUser() {
+        document.getElementById("content").innerHTML = `<button onclick="roleUser()">User</button>`
+    }
+
+    function roleUser() {
+        $.ajax({
+            headers: {
+                Authorization: 'Bearer ' + token
+            },
+            type: "GET",
+            url: "http://localhost:8081/users",
+            success: function (data) {
+                console.log(data)
+                writeUser(data)
+            },
+            error: function (error) {
+                document.getElementById("content").innerHTML = `<h4>Bạn không có quyền ở đây<\h4>`
+                loadData(0)
+                console.log(error)
+            }
+        })
+    }
+
+    function writeUser(data) {
+        let str = ""
+        for (let i = 0; i < data.length; i++) {
+            str += `<h4>Id : ${data[i].id}, ${data[i].username} - Tôi là User<\h4> `
+        }
+        document.getElementById("content").innerHTML = str
     }
 </script>
 </body>
